@@ -5,10 +5,7 @@ export default function Login() {
             <div className="w-full max-w-sm space-y-8">
                 {/* Logo */}
                 <div className="flex flex-col items-center">
-                    <img src="/images/login/GastroStockIcon.webp" alt=" GastroStock Icono" className="h-40 w-auto" />
-                    <h1 className="mt-4 text-2xl font-semibold tracking-wide text-gray-800">
-                        GastroStock
-                    </h1>
+                    <img src="/images/login/GastroStockIcon.webp" alt=" GastroStock Icono" className="h-60 w-auto" />
                 </div>
 
                 {/* Formulario */}
