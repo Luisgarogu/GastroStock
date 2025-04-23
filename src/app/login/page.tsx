@@ -34,7 +34,7 @@ export default function Login() {
                         <input
                             type="text"
                             placeholder="Usuario"
-                            className="w-full rounded-lg border border-gray-300 bg-white/60 py-3 pl-11 pr-4 text-sm placeholder-gray-500 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                            className="text-gray-800 w-full rounded-lg border border-gray-300 bg-white/60 py-3 pl-11 pr-4 text-sm placeholder-gray-500 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
                         />
                     </div>
 
@@ -58,14 +58,8 @@ export default function Login() {
                         <input
                             type="password"
                             placeholder="Contraseña"
-                            className="w-full rounded-lg border border-gray-300 bg-white/60 py-3 pl-11 pr-4 text-sm placeholder-gray-500 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                            className="text-gray-900 w-full rounded-lg border border-gray-300 bg-white/60 py-3 pl-11 pr-4 text-sm placeholder-gray-500 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
                         />
-                        <a
-                            href="#"
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-emerald-600 hover:underline"
-                        >
-                            ¿Olvidaste?
-                        </a>
                     </div>
 
                     {/* Botones */}
@@ -77,10 +71,10 @@ export default function Login() {
                             Login
                         </button>
                         <a
-                            href="/signup"
+                            href="/registro"
                             className="flex-1 rounded-full border border-emerald-600 py-3 text-center text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
                         >
-                            Signup
+                            Registro
                         </a>
                     </div>
                 </form>
