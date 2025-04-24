@@ -8,11 +8,9 @@ const EMAIL_REGEX =
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
-/* ←────────  PON TUS DATOS DE EMAILJS AQUÍ  ────────→ */
 const EMAILJS_SERVICE_ID  = "service_cv1fq7o";   // p. ej. "service_gmail"
 const EMAILJS_TEMPLATE_ID = "template_l3lqvmu";  // p. ej. "verify_code"
 const EMAILJS_PUBLIC_KEY  = "dzz7U2uXTrwd3kMME";   // p. ej. "bP1X2Y3Z4"
-/* --------------------------------------------------- */
 
 interface Errors {
   email?: string;
