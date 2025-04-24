@@ -172,7 +172,7 @@ export default function Login() {
                     maxLength={4}
                     value={codeInput}
                     onChange={(e) => setCodeInput(e.target.value)}
-                    className={`${inputClass(errors.code)} text-center tracking-widest text-lg`}
+                    className={`${inputClass(errors.code)} text-center tracking-widest text-lg text-gray-700`}
                     placeholder="0000"
                   />
                   {errors.code && <p className="text-xs text-red-600">{errors.code}</p>}
