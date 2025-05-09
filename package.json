@@ -10,7 +10,11 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+<<<<<<< HEAD
     "@tanstack/react-query": "^5.75.4",
+=======
+    "@tanstack/react-query": "^5.75.5",
+>>>>>>> 1ceb5ca5c2670b1613e265cfe2b28dab5c191286
     "axios": "^1.9.0",
     "emailjs": "^4.0.3",
     "jspdf": "^3.0.1",
