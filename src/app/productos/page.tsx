@@ -19,11 +19,7 @@ export default function ProductosPage() {
   const qc = useQueryClient();
 
   /* ───── consultas ───── */
-  const {
-    data: productos = [],
-    isPending,
-    error,
-  } = useQuery<Product[]>({
+  const { data: productos = [] } = useQuery<Product[]>({
     queryKey: ["productos"],
     queryFn: ProductsService.list,
   });
@@ -33,21 +29,7 @@ export default function ProductosPage() {
     queryFn: InventoryService.list,
   });
 
-  /* ───── manejo de carga / error ───── */
-  if (isPending) {
-    return (
-      <p className="p-8 text-center text-gray-600">Cargando inventario…</p>
-    );
-  }
-  if (error) {
-    return (
-      <p className="p-8 text-center text-red-600">
-        Error al cargar inventario
-      </p>
-    );
-  }
-
-  /* ───── mapa producto_id → cantidad_actual ───── */
+  /* mapa producto_id → cantidad */
   const stockMap = Object.fromEntries(
     inventario.map((i) => [i.producto_id, i.cantidad_actual])
   );
@@ -60,6 +42,7 @@ export default function ProductosPage() {
         prod = await ProductsService.update(body.id, body);
       } else {
         prod = await ProductsService.create(body as Omit<Product, "id">);
+        // crear fila inventario si es nuevo
         await InventoryService.createIfMissing(prod.id);
       }
       await InventoryService.updateQuantity(
@@ -85,12 +68,13 @@ export default function ProductosPage() {
 
   /* ───── estado draft ───── */
   const [draft, setDraft] = useState<Draft | null>(null);
+
   const handleSave = (e: FormEvent) => {
     e.preventDefault();
-    if (draft) saveMut.mutate(draft);
+    draft && saveMut.mutate(draft);
   };
 
-  /* ───── UI principal ───── */
+  /* ───── UI ───── */
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#c6ffd9] to-white py-14">
       <div className="mx-auto w-full max-w-6xl px-4">
@@ -147,7 +131,10 @@ export default function ProductosPage() {
                       <td className="whitespace-nowrap text-center space-x-3">
                         <button
                           onClick={() =>
-                            setDraft({ ...p, cantidad_actual: cantidad })
+                            setDraft({
+                              ...p,
+                              cantidad_actual: cantidad,
+                            })
                           }
                           className="text-emerald-600 hover:underline"
                         >
@@ -169,12 +156,12 @@ export default function ProductosPage() {
         </div>
       </div>
 
-      {/* modal de creación/edición */}
+      {/* modal */}
       {draft && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <form
             onSubmit={handleSave}
-            className="w-full max-w-md space-y-4 rounded bg-white p-6 shadow text-gray-600"
+            className="w-full max-w-md space-y-4 rounded bg-white p-6 shadow  text-gray-600"
           >
             <h2 className="text-lg font-semibold text-gray-500">
               {draft.id ? "Editar" : "Nuevo"} producto
@@ -246,4 +233,3 @@ export default function ProductosPage() {
     </div>
   );
 }
-
