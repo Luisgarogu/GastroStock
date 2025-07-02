@@ -14,5 +14,7 @@ export const ProductsService = {
   update: (id: number, p: Partial<Product>) =>
     api.put<Product>(`/products/${id}`, p).then((r) => r.data),
 
-  remove: (id: number) => api.delete(`/products/${id}`),
+  remove: async (id: number): Promise<void> => {
+    await api.delete(`/products/${id}`);
+  },
 };

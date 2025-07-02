@@ -1,16 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import emailjs from "@emailjs/browser";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import emailjs from '@emailjs/browser';
 
-const EMAIL_REGEX =
-  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+/* ─── validaciones ─────────────────────────────────────────── */
+const EMAIL    = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+const PASSWORD = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
-const EMAILJS_SERVICE_ID  = "service_cv1fq7o";   // p. ej. "service_gmail"
-const EMAILJS_TEMPLATE_ID = "template_l3lqvmu";  // p. ej. "verify_code"
-const EMAILJS_PUBLIC_KEY  = "dzz7U2uXTrwd3kMME";   // p. ej. "bP1X2Y3Z4"
+/* ─── EmailJS (tus ids) ────────────────────────────────────── */
+const EMAILJS_SERVICE_ID  = 'service_cv1fq7o';
+const EMAILJS_TEMPLATE_ID = 'template_l3lqvmu';
+const EMAILJS_PUBLIC_KEY  = 'dzz7U2uXTrwd3kMME';
 
 interface Errors {
   email?: string;
@@ -22,39 +23,48 @@ interface Errors {
 export default function Login() {
   const router = useRouter();
 
-  // -------- login state
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<Errors>({});
+  /* -------- estado login -------- */
+  const [email,    setEmail]    = useState('');
+  const [password, setPassword] = useState('');
+  const [errors,   setErrors]   = useState<Errors>({});
 
-  // -------- modal state
+  /* -------- modal verificación -------- */
   const [showDialog, setShowDialog] = useState(false);
-  const [genCode, setGenCode] = useState<string | null>(null);
-  const [codeInput, setCodeInput] = useState("");
-  const [sending, setSending] = useState(false);
-  const [mailSent, setMailSent] = useState(false);
+  const [genCode,    setGenCode]    = useState<string | null>(null);
+  const [codeInput,  setCodeInput]  = useState('');
+  const [sending,    setSending]    = useState(false);
+  const [mailSent,   setMailSent]   = useState(false);
 
-  /* ---------- helpers ---------- */
+  /* ───────── handlers ─────────────────────────────────────── */
 
+  /** submit del login */
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newErrors: Errors = {};
-    if (!EMAIL_REGEX.test(email)) newErrors.email = "Correo inválido.";
-    if (!PASSWORD_REGEX.test(password))
-      newErrors.password =
-        "Contraseña: 8+ caracteres con letra y número.";
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length === 0) {
-      console.log("Credenciales válidas ✅");
-    }
+    const err: Errors = {};
+    if (!EMAIL.test(email))        err.email    = 'Correo inválido';
+    if (!PASSWORD.test(password))  err.password = 'Contraseña débil';
+    setErrors(err);
+
+    if (Object.keys(err).length) return;
+
+    /* —— aquÍ llamarías a tu API de autenticación —— */
+    // const ok = await AuthService.login(email, password);
+    // if (!ok) { setErrors({ password: 'Credenciales incorrectas' }); return; }
+
+    /* Demo: guardamos flag y recargamos */
+    localStorage.setItem('auth', 'true');
+
+    /* Hard-refresh que reconstruye toda la app y hace que el navbar
+       se muestre inmediatamente; evita al usuario tener que pulsar F5 */
+    window.location.href = '/productos';
   };
 
-  /** Genera código y envía email con EmailJS */
+  /** genera y envía código para registro */
   const openVerificationDialog = async () => {
     setErrors({});
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     setGenCode(code);
-    setCodeInput("");
+    setCodeInput('');
     setShowDialog(true);
     setSending(true);
     setMailSent(false);
@@ -63,36 +73,35 @@ export default function Login() {
       await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
-        { code },          // ← variable del template
+        { code },
         EMAILJS_PUBLIC_KEY
       );
       setMailSent(true);
-      console.log(`✉️ Código enviado: ${code}`);
-    } catch (err) {
-      console.error(err);
-      setErrors({
-        sendMail: "No se pudo enviar el correo. Intenta de nuevo.",
-      });
+    } catch {
+      setErrors({ sendMail: 'No se pudo enviar el correo, inténtalo de nuevo.' });
     } finally {
       setSending(false);
     }
   };
 
+  /** comprobar código modal */
   const handleVerifyCode = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (codeInput === genCode) router.push("/registro");
-    else setErrors({ code: "Código incorrecto." });
+    if (codeInput === genCode) window.location.href = '/registro';
+    else setErrors({ code: 'Código incorrecto' });
   };
 
   const inputClass = (err?: string) =>
     `w-full rounded-lg border py-3 pl-11 pr-4 text-sm shadow-sm focus:ring-emerald-500 ${
-      err ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-emerald-500"
+      err ? 'border-red-500 focus:border-red-500'
+          : 'border-gray-300 focus:border-emerald-500'
     }`;
 
-  /* ---------- UI ---------- */
+  /* ───────── UI ────────────────────────────────────────────── */
+
   return (
     <>
-      {/* Login principal */}
+      {/* Pantalla de login */}
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#c6ffd9] to-white">
         <div className="w-full max-w-sm space-y-8">
 
@@ -101,9 +110,8 @@ export default function Login() {
             <img src="/images/login/GastroStockIcon.webp" alt="" className="h-60 w-auto" />
           </div>
 
-          {/* Formulario login */}
+          {/* Formulario */}
           <form className="space-y-6" onSubmit={handleSubmit} noValidate>
-
             {/* Email */}
             <div className="relative">
               <input
@@ -116,7 +124,7 @@ export default function Login() {
             </div>
             {errors.email && <p className="text-xs text-red-600 -mt-4">{errors.email}</p>}
 
-            {/* Password */}
+            {/* Contraseña */}
             <div className="relative">
               <input
                 type="password"
@@ -136,6 +144,7 @@ export default function Login() {
               >
                 Login
               </button>
+
               <button
                 type="button"
                 onClick={openVerificationDialog}
@@ -152,8 +161,8 @@ export default function Login() {
       {showDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">
-            Verificación por Parte del Administrador Para Crear Usuarios
+            <h2 className="mb-2 text-lg font-semibold text-gray-800">
+              Verificación por parte del administrador
             </h2>
 
             {sending && <p className="text-sm text-gray-700">Enviando código…</p>}
@@ -161,14 +170,13 @@ export default function Login() {
 
             {mailSent && (
               <>
-                <p className="text-sm text-gray-700 mb-3">
+                <p className="mb-3 text-sm text-gray-700">
                   Se envió un código de 4 dígitos a&nbsp;
                   <span className="font-medium">luisgarogu@gmail.com</span>.
                 </p>
 
                 <form onSubmit={handleVerifyCode} className="space-y-4">
                   <input
-                    type="text"
                     maxLength={4}
                     value={codeInput}
                     onChange={(e) => setCodeInput(e.target.value)}
