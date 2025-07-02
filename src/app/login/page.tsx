@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import emailjs from '@emailjs/browser';
 
 /* ─── validaciones ─────────────────────────────────────────── */
@@ -21,7 +20,6 @@ interface Errors {
 }
 
 export default function Login() {
-  const router = useRouter();
 
   /* -------- estado login -------- */
   const [email,    setEmail]    = useState('');

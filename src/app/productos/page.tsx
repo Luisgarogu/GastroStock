@@ -9,7 +9,6 @@ import {
 import { ProductsService } from "../lib/products";
 import { InventoryService } from "../lib/inventory";
 import { Product } from "../types/product";
-import { Inventory } from "../types/inventory";
 import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
