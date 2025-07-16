@@ -25,7 +25,7 @@ export function Navbar() {
 
       <ul className="flex gap-6 text-sm font-medium text-gray-700">
         <li><Link href="/productos">Productos</Link></li>
-        <li><Link href="/movimientos">Movimientos</Link></li>
+        <li><Link href="/proovedores">Proovedores</Link></li>
         <li><Link href="/reportes">Reportes</Link></li>
       </ul>
 

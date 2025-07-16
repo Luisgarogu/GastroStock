@@ -3,7 +3,7 @@ import axios from 'axios';
 /** Instancia global de Axios */
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? '/api', // .env.local
-  timeout: 10_000,
+  timeout: 100_000,
 });
 
 /* ---- Interceptores opcionales ---- */

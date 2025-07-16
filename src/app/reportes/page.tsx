@@ -96,7 +96,7 @@ export default function ReportesPage() {
                 selected={from}
                 onChange={setFrom}
                 dateFormat="yyyy-MM-dd"
-                className="input"
+                className="input text-gray-600"
                 placeholderText="YYYY-MM-DD"
               />
             </div>
@@ -107,7 +107,7 @@ export default function ReportesPage() {
                 selected={to}
                 onChange={setTo}
                 dateFormat="yyyy-MM-dd"
-                className="input"
+                className="input text-gray-600"
                 placeholderText="YYYY-MM-DD"
               />
             </div>
