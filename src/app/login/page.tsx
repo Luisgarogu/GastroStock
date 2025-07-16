@@ -2,15 +2,16 @@
 
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
+import Image from 'next/image';
 
 /* ─── validaciones ─────────────────────────────────────────── */
-const EMAIL    = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+const EMAIL = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 const PASSWORD = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
 /* ─── EmailJS (tus ids) ────────────────────────────────────── */
-const EMAILJS_SERVICE_ID  = 'service_cv1fq7o';
+const EMAILJS_SERVICE_ID = 'service_cv1fq7o';
 const EMAILJS_TEMPLATE_ID = 'template_l3lqvmu';
-const EMAILJS_PUBLIC_KEY  = 'dzz7U2uXTrwd3kMME';
+const EMAILJS_PUBLIC_KEY = 'dzz7U2uXTrwd3kMME';
 
 interface Errors {
   email?: string;
@@ -22,16 +23,16 @@ interface Errors {
 export default function Login() {
 
   /* -------- estado login -------- */
-  const [email,    setEmail]    = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errors,   setErrors]   = useState<Errors>({});
+  const [errors, setErrors] = useState<Errors>({});
 
   /* -------- modal verificación -------- */
   const [showDialog, setShowDialog] = useState(false);
-  const [genCode,    setGenCode]    = useState<string | null>(null);
-  const [codeInput,  setCodeInput]  = useState('');
-  const [sending,    setSending]    = useState(false);
-  const [mailSent,   setMailSent]   = useState(false);
+  const [genCode, setGenCode] = useState<string | null>(null);
+  const [codeInput, setCodeInput] = useState('');
+  const [sending, setSending] = useState(false);
+  const [mailSent, setMailSent] = useState(false);
 
   /* ───────── handlers ─────────────────────────────────────── */
 
@@ -39,8 +40,8 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const err: Errors = {};
-    if (!EMAIL.test(email))        err.email    = 'Correo inválido';
-    if (!PASSWORD.test(password))  err.password = 'Contraseña débil';
+    if (!EMAIL.test(email)) err.email = 'Correo inválido';
+    if (!PASSWORD.test(password)) err.password = 'Contraseña débil';
     setErrors(err);
 
     if (Object.keys(err).length) return;
@@ -90,9 +91,8 @@ export default function Login() {
   };
 
   const inputClass = (err?: string) =>
-    `w-full rounded-lg border py-3 pl-11 pr-4 text-sm shadow-sm focus:ring-emerald-500 ${
-      err ? 'border-red-500 focus:border-red-500'
-          : 'border-gray-300 focus:border-emerald-500'
+    `w-full rounded-lg border py-3 pl-11 pr-4 text-sm shadow-sm focus:ring-emerald-500 ${err ? 'border-red-500 focus:border-red-500'
+      : 'border-gray-300 focus:border-emerald-500'
     }`;
 
   /* ───────── UI ────────────────────────────────────────────── */
@@ -105,7 +105,7 @@ export default function Login() {
 
           {/* Logo */}
           <div className="flex flex-col items-center">
-            <img src="/images/login/GastroStockIcon.webp" alt="" className="h-60 w-auto" />
+            <Image src="/images/login/GastroStockIcon.webp" alt="Logo" width={220} height={220} />
           </div>
 
           {/* Formulario */}

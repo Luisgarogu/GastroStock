@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from 'next/image';  
 
 const EMAIL_REGEX =
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -51,9 +52,12 @@ export default function Registro() {
       <div className="w-full max-w-sm space-y-8">
         {/* Logo */}
         <div className="flex flex-col items-center">
-          <img
+            <Image
             src="/images/login/GastroStockIcon.webp"
             alt="GastroStock Icono"
+            width={120}
+            height={120}
+            priority           
             className="h-30 w-auto"
           />
           <h1 className="mt-4 text-2xl font-semibold tracking-wide text-gray-800">

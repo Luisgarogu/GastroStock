@@ -6,12 +6,12 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { ProductsService }   from '../lib/products';
-import { InventoryService }  from '../lib/inventory';
-import { StockService }      from '../lib/stock';
-import { SuggestService }    from '../../services/suggest';
-import { Product }           from '../types/product';
-import { useRouter }         from 'next/navigation';
+import { ProductsService } from '../lib/products';
+import { InventoryService } from '../lib/inventory';
+import { StockService } from '../lib/stock';
+import { SuggestService } from '../../services/suggest';
+import { Product } from '../types/product';
+import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -23,10 +23,11 @@ interface Draft extends Partial<Product> {
 }
 
 interface Suggestion {
-  title : string;
-  steps : string[];
+  title: string;
+  steps: string[];
   notes?: string;
 }
+
 
 /* -------------------------------------------------------------------- */
 /*  Utils – parsear la respuesta Markdown que llega de la IA             */
@@ -49,25 +50,28 @@ const parseMarkdown = (md: string): Suggestion => {
 
 /* ==================================================================== */
 export default function ProductosPage() {
-  const qc      = useQueryClient();
-  const router  = useRouter();
+  const qc = useQueryClient();
+  const router = useRouter();
 
   /* ----------------------- datos (React-Query) ----------------------- */
   const { data: productos = [], isLoading: prodLoading } = useQuery({
-    queryKey : ['productos'],
-    queryFn  : ProductsService.list,
+    queryKey: ['productos'],
+    queryFn: ProductsService.list,
   });
 
   const { data: inventario = [], isLoading: invLoading } = useQuery({
-    queryKey : ['inventario'],
-    queryFn  : InventoryService.list,
+    queryKey: ['inventario'],
+    queryFn: InventoryService.list,
   });
 
   /* ------------------------------ state ------------------------------ */
-  const [draft, setDraft]         = useState<Draft | null>(null);
-  const [aiOpen, setAiOpen]       = useState(false);
-  const [aiData, setAiData]       = useState<Suggestion | null>(null);
+  const [draft, setDraft] = useState<Draft | null>(null);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [aiData, setAiData] = useState<Suggestion | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
+
+  const updateDraft = <K extends keyof Draft>(k: K, v: Draft[K]) =>
+    setDraft(d => (d ? { ...d, [k]: v } : d));
 
   /* -------------------------- mutaciones ----------------------------- */
   const saveMut = useMutation({
@@ -85,10 +89,10 @@ export default function ProductosPage() {
 
       if (diff !== 0) {
         await StockService.create({
-          producto_id : prod.id,
-          tipo        : diff > 0 ? 'entrada' : 'salida',
-          cantidad    : Math.abs(diff),
-          usuario_id  : null,
+          producto_id: prod.id,
+          tipo: diff > 0 ? 'entrada' : 'salida',
+          cantidad: Math.abs(diff),
+          usuario_id: null,
           proveedor_id: null,
         });
       }
@@ -102,17 +106,19 @@ export default function ProductosPage() {
       setDraft(null);
       toast.success('Guardado');
     },
-    onError: (e: any) => toast.error(e.message ?? 'Error'),
+    onError: (e: unknown) =>
+      toast.error(e instanceof Error ? e.message : 'Error'),
   });
 
   const deleteMut = useMutation({
-    mutationFn : (id: number) => ProductsService.remove(id),
-    onSuccess  : () => {
+    mutationFn: (id: number) => ProductsService.remove(id),
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['productos'] });
       qc.invalidateQueries({ queryKey: ['inventario'] });
       toast.success('Producto eliminado');
     },
-    onError    : (e: any) => toast.error(e.message ?? 'Error'),
+    onError: (e: unknown) =>
+      toast.error(e instanceof Error ? e.message : 'Error'),
   });
 
   /* ------------------------- helpers ------------------------------- */
@@ -132,7 +138,7 @@ export default function ProductosPage() {
     try {
       /* 👇  AHORA TOMAMOS SOLO LOS INGREDIENTES QUE TENGAN stock > mín. */
       const availableIng = productos
-        .filter(p => (stockMap[p.id] ?? 0) >  p.stock_minimo)   // suficiente
+        .filter(p => (stockMap[p.id] ?? 0) > p.stock_minimo)   // suficiente
         .map(p => p.nombre);
 
       if (!availableIng.length) {
@@ -144,8 +150,8 @@ export default function ProductosPage() {
       const { suggestion } = await SuggestService.get(availableIng);
 
       setAiData(parseMarkdown(suggestion));
-    } catch (err: any) {
-      toast.error(err.message ?? 'Error IA');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Error IA');
       setAiData(null);
     } finally {
       setAiLoading(false);
@@ -255,8 +261,8 @@ export default function ProductosPage() {
                   <label className="block mb-1 text-sm ">{label}</label>
                   <input
                     className="input"
-                    value={(draft as any)[key] ?? ''}
-                    onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
+                    value={draft[key] ?? ''}
+                    onChange={e => updateDraft(key, e.target.value)}
                     required={key === 'nombre'}
                   />
                 </div>
@@ -272,8 +278,8 @@ export default function ProductosPage() {
                     <input
                       type="number"
                       className="input"
-                      value={(draft as any)[key] ?? 0}
-                      onChange={(e) => setDraft({ ...draft, [key]: +e.target.value })}
+                      value={draft[key] ?? 0}
+                      onChange={e => updateDraft(key, +e.target.value)}
                       min={0}
                     />
                   </div>
